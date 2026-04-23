@@ -1,8 +1,35 @@
-import cv2
+import tkinter as tk
+import time
 
-img = cv2.imread(input("Input a QR file to scan: ")) # Such as: "H:\Downloads\Rickrolling_QR_code.png"
+root = tk.Tk()
+root.title("Input Taker")
+root.geometry("300x200")
 
-qcd = cv2.QRCodeDetector()
-retval, decoded_info, points, straight_qrcode = qcd.detectAndDecodeMulti(img)
+start = 0.0
+length = 0.0
 
-print(decoded_info)
+def Take_input():
+    global start
+    start = time.time()
+
+def Take_output():
+    end = time.time()
+    length = end - start
+    greeting2.config(text=str(length))
+
+greeting = tk.Label(text="Enter your student ID:")
+greeting.pack(pady=20)
+
+T = tk.Text(root, height = 1, width = 10)
+
+b1 = tk.Button(root, text = "Time Start", command = Take_input)
+b2 = tk.Button(root, text = "Time End", command = Take_output)
+
+greeting2 = tk.Label(text=length)
+
+T.pack()
+b1.pack(pady=20)
+b2.pack(pady=10)
+greeting2.pack(pady=20)
+
+root.mainloop()
