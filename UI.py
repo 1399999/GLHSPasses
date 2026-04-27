@@ -42,4 +42,9 @@ class UI:
         self.length = self.end - self.start
         self.greeting2.config(text="Time: " + str(self.length))
         self.greeting3.config(text="Output: " + self.T.get("1.0",tk.END))
+
+        self.studentID = self.T.get("1.0",tk.END).strip()
+        self.timeElpased = str(self.length)
+
+        self.root.destroy()
     
