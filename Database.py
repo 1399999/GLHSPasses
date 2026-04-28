@@ -1,5 +1,5 @@
 from UI import UI 
-from sqlalchemy import text, create_engine
+from sqlalchemy import text, create_engine, select
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import MetaData, Table, Column, Integer
 
@@ -26,7 +26,7 @@ metadata_obj = MetaData()
 
 dataStruct = UI()
 print(dataStruct.studentID)
-print(dataStruct.timeElpased)
+print(dataStruct.timeElapsed)
 
 user_table = Table(
     "user_account",
@@ -37,6 +37,11 @@ user_table = Table(
 
 metadata_obj.create_all(engine)
 
-user = User(studentID=dataStruct.studentID, timeElapsed=dataStruct.timeElpased)
+harveyWinstein = User(studentID=dataStruct.studentID, timeElapsed=dataStruct.timeElapsed)
+user = User(studentID=dataStruct.studentID, timeElapsed=dataStruct.timeElapsed)
 
 Base.metadata.create_all(engine)
+
+stmt = select(user_table).where(user_table.c.name == "student id")
+
+print(stmt)
