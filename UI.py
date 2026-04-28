@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import filedialog
 import time
 
 class UI:
@@ -18,7 +19,7 @@ class UI:
 
         self.old_btn.pack(pady=20)
         self.new_btn.pack(pady=20)
-
+        
         self.root.mainloop()
 
     def Take_input(self):
@@ -54,6 +55,12 @@ class UI:
         self.new_window.title("New")
         self.new_window.geometry("300x200")
 
+        button = tk.Button(self.new_window, text='Open File', command=self.UploadAction)
+        self.T2 = tk.Label(self.new_window, height = 1, width = 100)
+
+        button.pack()
+        self.T2.pack(pady=20)
+
     def Take_output(self):
         self.end = time.time()
         self.length = self.end - self.start
@@ -61,7 +68,11 @@ class UI:
         self.greeting3.config(text="Output: " + self.T.get("1.0",tk.END))
 
         self.studentID = self.T.get("1.0",tk.END).strip()
-        self.timeElapsed = str(self.length)
+        self.timeElpased = str(self.length)
 
         self.root.destroy()
+
+    def UploadAction(self, event=None):
+        filename = filedialog.askopenfilename()
+        self.T2.config(text="Selected: " + filename)
     
