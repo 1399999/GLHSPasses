@@ -25,18 +25,21 @@ engine = create_engine("sqlite+pysqlite:///:memory:", echo=True)
 metadata_obj = MetaData()
 
 dataStruct = UI()
-print(dataStruct.studentID)
-print(dataStruct.timeElpased)
 
-user_table = Table(
-    "user_account",
-    metadata_obj,
-    Column("student id", Integer, primary_key=True),
-    Column("time elapsed", Integer)
-)
+if dataStruct.is_old_window: 
+    
+    print(dataStruct.studentID)
+    print(dataStruct.timeElpased)
 
-metadata_obj.create_all(engine)
+    user_table = Table(
+        "user_account",
+        metadata_obj,
+        Column("student id", Integer, primary_key=True),
+        Column("time elapsed", Integer)
+    )
 
-user = User(studentID=dataStruct.studentID, timeElapsed=dataStruct.timeElpased)
+    metadata_obj.create_all(engine)
 
-Base.metadata.create_all(engine)
+    user = User(studentID=dataStruct.studentID, timeElapsed=dataStruct.timeElpased)
+
+    Base.metadata.create_all(engine)

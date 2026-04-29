@@ -20,12 +20,16 @@ class UI:
         self.old_btn.pack(pady=20)
         self.new_btn.pack(pady=20)
         
+        self.is_old_window = None
+        
         self.root.mainloop()
 
     def Take_input(self):
         self.start = time.time()
 
     def Old_func(self):
+        self.is_old_window = True
+
         self.old_window = tk.Toplevel(self.root)
         self.old_window.title("Old")
         self.old_window.geometry("300x200")
@@ -51,11 +55,13 @@ class UI:
         self.greeting3.pack(pady=20)
 
     def New_func(self):
+        self.is_old_window = False
+
         self.new_window = tk.Toplevel(self.root)
         self.new_window.title("New")
         self.new_window.geometry("300x200")
 
-        button = tk.Button(self.new_window, text='Open File', command=self.UploadAction)
+        button = tk.Button(self.new_window, text='Open File', command=self.upload_action)
         self.T2 = tk.Label(self.new_window, height = 1, width = 100)
 
         button.pack()
@@ -72,7 +78,13 @@ class UI:
 
         self.root.destroy()
 
-    def UploadAction(self, event=None):
+    def upload_action(self, event=None):
         filename = filedialog.askopenfilename()
-        self.T2.config(text="Selected: " + filename)
+        self.T2.config(text="Selected: " + self.format_path(filename))
+
+    def format_path(self, filename):
+        if filename[:2] == "//":
+            return "H:/" + "/".join(filename.split("/")[9:])
+        else:
+            return filename
     
