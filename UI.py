@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import time
+import qrcode
 
 class UI:
 
@@ -63,9 +64,11 @@ class UI:
 
         button = tk.Button(self.new_window, text='Open File', command=self.upload_action)
         self.T2 = tk.Label(self.new_window, height = 1, width = 100)
+        self.T3 = tk.Label(self.new_window, height = 40, width = 100)
 
         button.pack()
         self.T2.pack(pady=20)
+        self.T3.pack(pady=20)
 
     def Take_output(self):
         self.end = time.time()
@@ -81,6 +84,18 @@ class UI:
     def upload_action(self, event=None):
         filename = filedialog.askopenfilename()
         self.T2.config(text="Selected: " + self.format_path(filename))
+
+        self.lines = []
+
+        with open(filename, 'r') as file:
+            for line in file:
+                self.lines.append(line.strip())
+                self.T3.config(text=self.T3['text'] + line.strip() + "\n")
+
+        for i in range(len(self.lines)):
+
+            img = qrcode.make(self.lines[i])
+            img.save(f"H:/QRCodeDump/{self.lines[i]}.png")
 
     def format_path(self, filename):
         if filename[:2] == "//":
