@@ -95,7 +95,7 @@ class UI:
         for i in range(len(self.lines)):
 
             img = qrcode.make(self.lines[i])
-            img.save(f"H:/QRCodeDump/{self.lines[i]}.png")
+            img.save(f"QRCodeDump/{self.lines[i]}.png")
 
     def format_path(self, filename):
         if filename[:2] == "//":
