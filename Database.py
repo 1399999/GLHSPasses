@@ -1,6 +1,6 @@
 from UI import UI 
 from sqlalchemy import text, create_engine
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy import MetaData, Table, Column, Integer
 
 from sqlalchemy.orm import Mapped
@@ -20,26 +20,26 @@ class User(Base):
 
 stmt= text("SELECT x, y FROM some_table WHERE y > :y ORDER BY x, y")
 
-engine = create_engine("sqlite+pysqlite:///:memory:", echo=True)
+engine = create_engine('sqlite:///data.db')
 
 metadata_obj = MetaData()
 
 dataStruct = UI()
-
-if dataStruct.is_old_window: 
     
-    print(dataStruct.studentID)
-    print(dataStruct.timeElpased)
+print(dataStruct.studentID)
+print(dataStruct.timeElapsed)
 
-    user_table = Table(
-        "user_account",
-        metadata_obj,
-        Column("student id", Integer, primary_key=True),
-        Column("time elapsed", Integer)
-    )
+user_table = Table(
+    "user_account",
+    metadata_obj,
+    Column("studentID", Integer, primary_key=True),
+    Column("timeElapsed", Integer)
+)
 
-    metadata_obj.create_all(engine)
+metadata_obj.create_all(engine)
 
-    user = User(studentID=dataStruct.studentID, timeElapsed=dataStruct.timeElpased)
+user = User(studentID=dataStruct.studentID, timeElapsed=dataStruct.timeElapsed)
 
-    Base.metadata.create_all(engine)
+with Session(engine) as session:
+    session.add(user)
+    session.commit()
