@@ -1,4 +1,7 @@
-from UI import UI 
+from UI import UI
+
+## NEXT STEP USE FASTAPI TO CREATE AN API ENDPOINT TO RECEIVE THE DATA INSTEAD OF USING A UI CLASS TO SIMULATE THE DATA INPUT. 
+## THIS WILL ALLOW FOR REAL-TIME DATA COLLECTION AND STORAGE IN THE DATABASE.
 
 from decimal import *
 
@@ -18,9 +21,6 @@ class User(Base):
     studentID: Mapped[int] = mapped_column(primary_key=True)
     timeElapsed: Mapped[int] = mapped_column()
     location: Mapped[str] = mapped_column(nullable=True)
-
-    def __repr__(self):
-        return f"User(id={self.studentID!r}), timeElapsed={self.timeElapsed!r}"
 
 engine = create_engine('sqlite:///data.db')
 
