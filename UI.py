@@ -33,15 +33,21 @@ class UI:
 
         self.old_window = tk.Toplevel(self.root)
         self.old_window.title("Old")
-        self.old_window.geometry("300x200")
 
         self.start = 0.0
         self.length = 0.0
 
-        self.greeting = tk.Label(self.old_window, text="Enter student ID:")
-        self.greeting.pack(pady=20)
+        self.greeting = tk.Label(self.old_window, text="Enter student ID: ")
+        self.greeting.pack(pady=(10, 0))
 
         self.T = tk.Text(self.old_window, height = 1, width = 10)
+        self.T.pack()
+
+        self.l = tk.Label(self.old_window, text="Enter location (optional): ")
+        self.l.pack(pady=(10, 0))
+        
+        self.location_T = tk.Text(self.old_window, height = 1, width = 10)
+        self.location_T.pack()
 
         self.b1 = tk.Button(self.old_window, text = "Submit, Start Time", command = self.Take_input)
         self.b2 = tk.Button(self.old_window, text = "End Time", command = self.Take_output)
@@ -49,7 +55,6 @@ class UI:
         self.greeting2 = tk.Label(self.old_window, text="Time: " + str(self.length))
         self.greeting3 = tk.Label(self.old_window, text="Output: " + str(self.length))
 
-        self.T.pack()
         self.b1.pack(pady=20)
         self.b2.pack(pady=10)
         self.greeting2.pack(pady=20)
@@ -77,7 +82,8 @@ class UI:
         self.greeting3.config(text="Output: " + self.T.get("1.0",tk.END))
 
         self.studentID = self.T.get("1.0",tk.END).strip()
-        self.timeElpased = str(self.length)
+        self.timeElapsed = str(self.length)
+        self.location = self.location_T.get("1.0",tk.END).strip()
 
         self.root.destroy()
 
@@ -102,4 +108,3 @@ class UI:
             return "H:/" + "/".join(filename.split("/")[9:])
         else:
             return filename
-    
