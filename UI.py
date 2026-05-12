@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, ttk
 import time
 import qrcode
 
@@ -29,6 +29,8 @@ class UI:
         self.start = time.time()
 
     def Old_func(self):
+        places = ["Library", "Restroom", "Hallway", "Office", "Student Services"]
+
         self.is_old_window = True
 
         self.old_window = tk.Toplevel(self.root)
@@ -46,7 +48,7 @@ class UI:
         self.l = tk.Label(self.old_window, text="Enter location (optional): ")
         self.l.pack(pady=(10, 0))
         
-        self.location_T = tk.Text(self.old_window, height = 1, width = 10)
+        self.location_T = ttk.Combobox(self.old_window, values=places)
         self.location_T.pack()
 
         self.b1 = tk.Button(self.old_window, text = "Submit, Start Time", command = self.Take_input)
@@ -83,7 +85,7 @@ class UI:
 
         self.studentID = self.T.get("1.0",tk.END).strip()
         self.timeElapsed = str(self.length)
-        self.location = self.location_T.get("1.0",tk.END).strip()
+        self.location = self.location_T.get().strip()
 
         self.root.destroy()
 
@@ -108,3 +110,4 @@ class UI:
             return "H:/" + "/".join(filename.split("/")[9:])
         else:
             return filename
+    
