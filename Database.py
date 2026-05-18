@@ -18,9 +18,11 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "user_account"
 
-    studentID: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    studentID: Mapped[int] = mapped_column(unique=True)
     timeElapsed: Mapped[int] = mapped_column()
     location: Mapped[str] = mapped_column(nullable=True)
+    name: Mapped[str] = mapped_column()
 
 engine = create_engine('sqlite:///data.db')
 
@@ -32,12 +34,14 @@ print(dataStruct.studentID)
 print(dataStruct.timeElapsed)
 
 user_table = Table(
-    "user_account",
-    metadata_obj,
-    Column("studentID", Integer, primary_key=True),
-    Column("timeElapsed", Integer),
-    Column("location", String, nullable=True)
-)
+        "user_account",
+        metadata_obj,
+        Column("id", Integer, primary_key=True),
+        Column("studentID", Integer, unique=True),
+        Column("timeElapsed", Integer),
+        Column("location", String, nullable=True),
+        Column("name", String)
+    )
 
 metadata_obj.create_all(engine)
 
