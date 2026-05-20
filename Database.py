@@ -6,25 +6,41 @@ from UI import UI
 from decimal import *
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Session
-from sqlalchemy import MetaData, Table, Column, Integer, String
+from sqlalchemy.orm import DeclarativeBase, Session, relationship
+from sqlalchemy import MetaData, ForeignKey
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
+
+engine = create_engine('sqlite:///data.db')
 
 class Base(DeclarativeBase):
     pass
 
 class User(Base):
-    __tablename__ = "user_account"
+    __tablename__ = "user"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    studentID: Mapped[int] = mapped_column(unique=True)
-    timeElapsed: Mapped[int] = mapped_column()
-    location: Mapped[str] = mapped_column(nullable=True)
+    studentID: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
 
-engine = create_engine('sqlite:///data.db')
+    actions: Mapped[list["Action"]] = relationship(back_populates="user_rel")
+
+class Action(Base):
+    __tablename__ = "registry"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    location: Mapped[str] = mapped_column()
+    user: Mapped[User] = mapped_column(ForeignKey("user.studentID"))
+
+    timeStart: Mapped[int] = mapped_column(nullable=True)
+    timeEnd: Mapped[int] = mapped_column(nullable=True)
+
+    user_rel: Mapped["User"] = relationship(back_populates="actions")
+
+    def __init__(self, user: int, timeStart: datetime, location: str = None):
+        self.location = location
+        self.user = user
+
 
 metadata_obj = MetaData()
 
@@ -33,15 +49,7 @@ dataStruct = UI()
 print(dataStruct.studentID)
 print(dataStruct.timeElapsed)
 
-user_table = Table(
-        "user_account",
-        metadata_obj,
-        Column("id", Integer, primary_key=True),
-        Column("studentID", Integer, unique=True),
-        Column("timeElapsed", Integer),
-        Column("location", String, nullable=True),
-        Column("name", String)
-    )
+Base.metadata.create_all(engine)
 
 metadata_obj.create_all(engine)
 
@@ -50,7 +58,6 @@ user = User(
         timeElapsed=float(Decimal(dataStruct.timeElapsed).quantize(Decimal('0.001'))), 
         location=dataStruct.location
     )
-
 
 with Session(engine) as session:
     session.add(user)
