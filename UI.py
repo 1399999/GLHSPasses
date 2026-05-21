@@ -1,113 +1,43 @@
-import tkinter as tk
-from tkinter import filedialog, ttk
+from flask import Flask, render_template, request
 import time
-import qrcode
 
-class UI:
+start_btn = None
+end_btn = None
+t0 = None
+t1 = None
+combust_nun = None
 
-    # root = None
-    # time_str = None
-    # greeting2 = None
+app = Flask(__name__)
 
-    def __init__(self):
+@app.route("/", methods=["GET", "POST"])
+def home():
+    global start_btn
+    global end_btn
+    global t0
+    global t1
+    global combust_nun
 
-        self.root = tk.Tk()
-        self.root.title("Input Taker")
-        self.root.geometry("300x300")
-
-        self.old_btn = tk.Button(self.root, text = "Old Functionality", command = self.Old_func)
-        self.new_btn = tk.Button(self.root, text = "New Functionality", command = self.New_func)
-
-        self.old_btn.pack(pady=20)
-        self.new_btn.pack(pady=20)
-        
-        self.is_old_window = None
-        
-        self.root.mainloop()
-
-    def Take_input(self):
-        self.start = time.time()
-
-    def Old_func(self):
-        places = ["Library", "Restroom", "Hallway", "Office", "Student Services"]
-
-        self.is_old_window = True
-
-        self.old_window = tk.Toplevel(self.root)
-        self.old_window.title("Old")
-
-        self.start = 0.0
-        self.length = 0.0
-
-        self.greeting = tk.Label(self.old_window, text="Enter student ID: ")
-        self.greeting.pack(pady=(10, 0))
-
-        self.T = tk.Text(self.old_window, height = 1, width = 10)
-        self.T.pack()
-
-        self.l = tk.Label(self.old_window, text="Enter location (optional): ")
-        self.l.pack(pady=(10, 0))
-        
-        self.location_T = ttk.Combobox(self.old_window, values=places)
-        self.location_T.pack()
-
-        self.b1 = tk.Button(self.old_window, text = "Submit, Start Time", command = self.Take_input)
-        self.b2 = tk.Button(self.old_window, text = "End Time", command = self.Take_output)
-
-        self.greeting2 = tk.Label(self.old_window, text="Time: " + str(self.length))
-        self.greeting3 = tk.Label(self.old_window, text="Output: " + str(self.length))
-
-        self.b1.pack(pady=20)
-        self.b2.pack(pady=10)
-        self.greeting2.pack(pady=20)
-        self.greeting3.pack(pady=20)
-
-    def New_func(self):
-        self.is_old_window = False
-
-        self.new_window = tk.Toplevel(self.root)
-        self.new_window.title("New")
-        self.new_window.geometry("300x200")
-
-        button = tk.Button(self.new_window, text='Open File', command=self.upload_action)
-        self.T2 = tk.Label(self.new_window, height = 1, width = 100)
-        self.T3 = tk.Label(self.new_window, height = 40, width = 100)
-
-        button.pack()
-        self.T2.pack(pady=20)
-        self.T3.pack(pady=20)
-
-    def Take_output(self):
-        self.end = time.time()
-        self.length = self.end - self.start
-        self.greeting2.config(text="Time: " + str(self.length))
-        self.greeting3.config(text="Output: " + self.T.get("1.0",tk.END))
-
-        self.studentID = self.T.get("1.0",tk.END).strip()
-        self.timeElapsed = str(self.length)
-        self.location = self.location_T.get().strip()
-
-        self.root.destroy()
-
-    def upload_action(self, event=None):
-        filename = filedialog.askopenfilename()
-        self.T2.config(text="Selected: " + self.format_path(filename))
-
-        self.lines = []
-
-        with open(filename, 'r') as file:
-            for line in file:
-                self.lines.append(line.strip())
-                self.T3.config(text=self.T3['text'] + line.strip() + "\n")
-
-        for i in range(len(self.lines)):
-
-            img = qrcode.make(self.lines[i])
-            img.save(f"QRCodeDump/{self.lines[i]}.png")
-
-    def format_path(self, filename):
-        if filename[:2] == "//":
-            return "H:/" + "/".join(filename.split("/")[9:])
-        else:
-            return filename
+    user_input_1 = None
+    user_input_2 = None
     
+    if request.method == "POST":
+        start_btn = request.form.get("start")
+        end_btn = request.form.get("end")
+        if start_btn != None:
+            t0 = time.time()
+        if end_btn != None:
+            t1 = time.time()
+            combust_nun = t1 - t0
+        user_input_1 = request.form.get("user_input_1")
+        user_input_2 = request.form.get("user_input_2")
+    
+    output = render_template("index.html", stud_id=user_input_1, place=user_input_2, start_btn=start_btn, end_btn=end_btn, time_a=combust_nun)
+
+    if start_btn != None and end_btn != None:
+        start_btn = None
+        end_btn = None
+
+    return output
+
+if __name__ == "__main__":
+    app.run(debug=True)

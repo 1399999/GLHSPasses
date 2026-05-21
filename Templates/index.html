@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Input Form</title>
+</head>
+<body>
+
+    <h2>Flask Textbox Input</h2>
+    
+    <form method="POST">
+        <input type="text" name="user_input_1" placeholder="Enter Student ID" required>
+        
+        <label for="options">Choose a palce to go:</label>
+
+        <select name="user_input_2" id="options" required>
+            <option value="restroom">Restroom</option>
+            <option value="library">Library</option>
+            <option value="hallway">Hallway</option>
+            <option value="office">Office</option>
+            <option value="student_services">Student Services</option>
+        </select>
+
+        <button type="submit", value="start", name="start">Start</button>
+        <button type="submit", value="end", name="end">End</button>
+    </form>
+
+    {% if stud_id %}
+        <p><strong>Student ID:</strong> {{ stud_id }}</p>
+        <p><strong>Place:</strong> {{ place }}</p>
+        <p><strong>Pressed Start?</strong> {{ start_btn }}</p>
+        <p><strong>Pressed End?</strong> {{ end_btn }}</p>
+        <p><strong>Time spent:</strong> {{ time_a }}</p>
+    {% endif %}
+
+</body>
+</html>
