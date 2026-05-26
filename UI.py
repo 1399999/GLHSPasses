@@ -47,5 +47,9 @@ def home():
 
     return output
 
+@app.route("/data", methods=["GET"])
+def data():
+    return render_template("data.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
