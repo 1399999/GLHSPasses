@@ -1,4 +1,4 @@
-from UI import UI
+import time as time
 
 ## NEXT STEP USE FASTAPI TO CREATE AN API ENDPOINT TO RECEIVE THE DATA INSTEAD OF USING A UI CLASS TO SIMULATE THE DATA INPUT. 
 ## THIS WILL ALLOW FOR REAL-TIME DATA COLLECTION AND STORAGE IN THE DATABASE.
@@ -7,12 +7,10 @@ from decimal import *
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, relationship
-from sqlalchemy import MetaData, ForeignKey
+from sqlalchemy import MetaData, ForeignKey, select
 
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, joinedload
 from sqlalchemy.orm import mapped_column
-
-engine = create_engine('sqlite:///data.db')
 
 class Base(DeclarativeBase):
     pass
@@ -21,44 +19,61 @@ class User(Base):
     __tablename__ = "user"
 
     studentID: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column()
+    name: Mapped[str] = mapped_column(nullable=True)
 
-    actions: Mapped[list["Action"]] = relationship(back_populates="user_rel")
+    actions: Mapped[list["Action"]] = relationship(back_populates="user_rel", cascade="all, delete-orphan")
 
 class Action(Base):
-    __tablename__ = "registry"
+    __tablename__ = "action"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     location: Mapped[str] = mapped_column()
-    user: Mapped[User] = mapped_column(ForeignKey("user.studentID"))
+    user: Mapped[User] = mapped_column(ForeignKey(User.studentID))
 
-    timeStart: Mapped[int] = mapped_column(nullable=True)
-    timeEnd: Mapped[int] = mapped_column(nullable=True)
+    time: Mapped[float] = mapped_column(default=time.time)
 
-    user_rel: Mapped["User"] = relationship(back_populates="actions")
+    user_rel: Mapped["User"] = relationship(back_populates="actions")    
 
-    def __init__(self, user: int, timeStart: datetime, location: str = None):
-        self.location = location
-        self.user = user
+class DataBase():
 
+    def __init__(self):
+        self.engine = create_engine('sqlite:///data.db')
+        
+        metadata_obj = MetaData()
 
-metadata_obj = MetaData()
+        Base.metadata.create_all(self.engine)
+        metadata_obj.create_all(self.engine)
 
-dataStruct = UI()
-    
-print(dataStruct.studentID)
-print(dataStruct.timeElapsed)
+    def addAction(self, desiredID, desiredName, desiredLocation):
+        with Session(self.engine) as session:
+            db_user = session.scalar(
+                select(User)
+                .where(User.studentID == desiredID)
+                .options(joinedload(User.actions))
+            )
 
-Base.metadata.create_all(engine)
+            if not db_user:
+                db_user = User(
+                    studentID = desiredID,
+                    name = desiredName
+                )
 
-metadata_obj.create_all(engine)
+                session.add(db_user)
 
-user = User(
-        studentID=dataStruct.studentID, 
-        timeElapsed=float(Decimal(dataStruct.timeElapsed).quantize(Decimal('0.001'))), 
-        location=dataStruct.location
-    )
+            db_user.actions.append(Action(location = desiredLocation))
 
-with Session(engine) as session:
-    session.add(user)
-    session.commit()
+            session.commit()
+            session.refresh(db_user)
+
+# searchID = int(input("Enter the student ID you want to search for: "))
+
+# stmt = select(User).where(User.studentID == searchID).options(joinedload(User.actions))
+
+# with Session(engine) as session:
+#     db_user = session.scalar(stmt)
+
+#     if db_user:
+#         print(f"User Found as: {db_user.studentID} under name {db_user.name}")
+#         print("Actions: ")
+#         for action in db_user.actions:
+#             print(f"Location: {action.location} at time {action.time}")
