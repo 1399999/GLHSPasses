@@ -3,36 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Flask Input Form</title>
 </head>
 <body>
-
-    <h2>Flask Textbox Input</h2>
+    <div class="mx-auto">
+        <h1 class="center">GLHS Passes</h1>
+        <hr/>
+        <br/>
     
-    <form method="POST">
-        <input type="text" name="user_input_1" placeholder="Enter Student ID" required>
-        
-        <label for="options">Choose a palce to go:</label>
+        <form method="POST">
+            <div class="mb-3 w-25 mx-auto">
+                <label for="stud_id" class="form-label">Enter Student ID:</label>
+                <input type="text" class="form-control mx-auto" name="user_input_1" placeholder="Enter Student ID" id="stud_id" required>
+            </div>
 
-        <select name="user_input_2" id="options" required>
-            <option value="restroom">Restroom</option>
-            <option value="library">Library</option>
-            <option value="hallway">Hallway</option>
-            <option value="office">Office</option>
-            <option value="student_services">Student Services</option>
-        </select>
+            <br/>
+            
+            <div class="mb-3 w-25 mx-auto">
+                <label for="options" class="form-label">Choose a palce to go:</label>
 
-        <button type="submit", value="start", name="start">Start</button>
-        <button type="submit", value="end", name="end">End</button>
-    </form>
+                <select name="user_input_2" id="options" class="form-select" required>
+                    <option value="restroom">Restroom</option>
+                    <option value="library">Library</option>
+                    <option value="hallway">Hallway</option>
+                    <option value="office">Office</option>
+                    <option value="student_services">Student Services</option>
+                </select>
+            </div>
 
-    {% if stud_id %}
-        <p><strong>Student ID:</strong> {{ stud_id }}</p>
-        <p><strong>Place:</strong> {{ place }}</p>
-        <p><strong>Pressed Start?</strong> {{ start_btn }}</p>
-        <p><strong>Pressed End?</strong> {{ end_btn }}</p>
-        <p><strong>Time spent:</strong> {{ time_a }}</p>
-    {% endif %}
+            <br/>
+
+            <div class="mb-3 w-25 mx-auto">
+                <button type="submit", value="start", name="start", class="btn btn-outline-primary">Start</button>
+                <button type="submit", value="end", name="end", class="btn btn-outline-danger">End</button>
+            </div>
+        </form>
+
+        {% if stud_id %}
+            <p><strong>Student ID:</strong> {{ stud_id }}</p>
+            <p><strong>Place:</strong> {{ place }}</p>
+            <p><strong>Pressed Start?</strong> {{ start_btn }}</p>
+            <p><strong>Pressed End?</strong> {{ end_btn }}</p>
+            <p><strong>Time spent:</strong> {{ time_a }}</p>
+        {% endif %}
+    </div>
 
 </body>
 </html>
+
+<style>
+    .center {
+        display: flex; 
+        flex-direction: row;
+        align-items: center; 
+        justify-content: center;
+    }
+</style>
