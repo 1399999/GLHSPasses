@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 import time
-import Database as DataBase
 
 start_btn = None
 end_btn = None
@@ -9,8 +8,6 @@ t1 = None
 combust_nun = None
 
 app = Flask(__name__)
-
-db = DataBase.DataBase()
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -37,8 +34,6 @@ def home():
         user_input_2 = request.form.get("user_input_2")
         user_input_3 = request.form.get("user_input_3")
 
-        db.addAction(user_input_1, user_input_3, user_input_2)
-
     output = render_template("index.html", stud_id=user_input_1, place=user_input_2, name=user_input_3, start_btn=start_btn, end_btn=end_btn, time_a=combust_nun)
 
     if start_btn != None and end_btn != None:
@@ -49,7 +44,11 @@ def home():
 
 @app.route("/data", methods=["GET"])
 def data():
-    return render_template("data.html")
+    data_list = [[1, "Mark", "Otto", "@mdo"],
+                 [2, "Jacob", "Thornton", "@fat"],
+                 [3, "Larry", "The Bird", "@twitter"]]
+
+    return render_template("data.html", data_list=data_list)
 
 if __name__ == "__main__":
     app.run(debug=True)
