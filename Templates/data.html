@@ -7,9 +7,15 @@
     <title>Flask Input Form</title>
 </head>
     <body>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="/" role="tab" aria-controls="nav-home" aria-selected="false">Sample Functionality</a>
+                <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="/data" role="tab" aria-controls="nav-profile" aria-selected="true">Display Data</a>
+            </div>
+        </nav>
+
         <div class="mx-auto">
-            <h1 class="center">GLHS Passes Data</h1>
-            <hr/>
+
             <br/>
 
             <table class="table table-striped">
@@ -30,26 +36,6 @@
                             <td>{{data_item[3]}}</td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="container">
-            <table class="fixed-bottom" style="height: 100px; margin-left: 25px;">
-                <tbody scope="row">
-                    <tr>
-                        <td class="align-middle col-2">
-                            <a href="\">
-                                Go to Sample Input Data
-                            </a>
-                        </td>
-
-                        <td class="align-middle col-8">
-                            <a href="\data">
-                                Go to Display Data
-                            </a>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
