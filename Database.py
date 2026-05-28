@@ -65,15 +65,33 @@ class DataBase():
             session.commit()
             session.refresh(db_user)
 
-# searchID = int(input("Enter the student ID you want to search for: "))
+    def searchID(self, searchID):
+        stmt = select(User).where(User.studentID == searchID).options(joinedload(User.actions))
 
-# stmt = select(User).where(User.studentID == searchID).options(joinedload(User.actions))
+        with Session(self.engine) as session:
+            db_user = session.scalar(stmt)
 
-# with Session(engine) as session:
-#     db_user = session.scalar(stmt)
+            if db_user:
+                name = db_user.name
 
-#     if db_user:
-#         print(f"User Found as: {db_user.studentID} under name {db_user.name}")
-#         print("Actions: ")
-#         for action in db_user.actions:
-#             print(f"Location: {action.location} at time {action.time}")
+                actions = [[action.location, action.time] for action in db_user.actions]
+                return [searchID, name, actions]
+        
+        return []
+    
+    def fetch(self):
+        stmt = select(User).options(joinedload(User.actions)).order_by(Action.id)
+
+        with Session(self.engine) as session:
+            users = session.execute(stmt).unique().scalars().all()
+
+        if users:
+            user_data = [
+                [action.id, action.location, user.name, action.time]
+                
+                for user in users
+                for action in user.actions
+            ]
+            return user_data
+        
+        return []
