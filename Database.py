@@ -21,7 +21,7 @@ class User(Base):
     studentID: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=True)
 
-    actions: Mapped[list["Action"]] = relationship(back_populates="user_rel", cascade="all, delete-orphan")
+    actions: Mapped[list["Action"]] = relationship(back_populates="user_rel", cascade="all, delete-orphan", order_by=lambda: Action.id)
 
 class Action(Base):
     __tablename__ = "action"
@@ -80,7 +80,7 @@ class DataBase():
         return []
     
     def fetch(self):
-        stmt = select(User).options(joinedload(User.actions)).order_by(Action.id)
+        stmt = select(User).options(joinedload(User.actions))
 
         with Session(self.engine) as session:
             users = session.execute(stmt).unique().scalars().all()
