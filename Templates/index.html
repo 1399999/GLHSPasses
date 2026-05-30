@@ -11,6 +11,7 @@
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="/" role="tab" aria-controls="nav-home" aria-selected="true">Sample Functionality</a>
             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="/data" role="tab" aria-controls="nav-profile" aria-selected="false">Display Data</a>
+            <a class="nav-item nav-link" id="nav-user-tab" data-toggle="tab" href="/user" role="tab" aria-controls="nav-user" aria-selected="false">User Management</a>
         </div>
     </nav>
     </div>
@@ -22,13 +23,13 @@
         <form method="POST">
             <div class="mb-3 w-25 mx-auto">
                 <label for="stud_id" class="form-label">Enter Student ID:</label>
-                <input type="text" class="form-control mx-auto" name="user_input_1" placeholder="Enter Student ID" id="stud_id" required>
+                <input type="text" class="form-control mx-auto" name="user_input_1" placeholder="Enter Student ID" id="stud_id">
             </div>
 
             <br/>
             
             <div class="mb-3 w-25 mx-auto">
-                <label for="options" class="form-label">Choose a palce to go:</label>
+                <label for="options" class="form-label">Choose a place to go:</label>
 
                 <select name="user_input_2" id="options" class="form-select" required>
                     <option value="restroom">Restroom</option>
@@ -41,19 +42,23 @@
 
             <br/>
 
-            <div class="mb-3 w-25 mx-auto">
-                <button type="submit", value="start", name="start", class="btn btn-outline-primary">Start</button>
-                <button type="submit", value="end", name="end", class="btn btn-outline-danger">End</button>
+            <div display="display: flex; justify-content: center; align-items: center;" class="mb-3 w-25 mx-auto center">
+                <button type="submit", value="submit", name="submit_btn", class="btn btn-outline-success">Submit</button>
             </div>
         </form>
 
-        {% if stud_id %}
-            <p><strong>Student ID:</strong> {{ stud_id }}</p>
-            <p><strong>Place:</strong> {{ place }}</p>
-            <p><strong>Pressed Start?</strong> {{ start_btn }}</p>
-            <p><strong>Pressed End?</strong> {{ end_btn }}</p>
-            <p><strong>Time spent:</strong> {{ time_a }}</p>
-        {% endif %}
+        <div class="mb-3 w-25 mx-auto">
+            {% if db_success == False %}
+                <div class="alert alert-danger" role="alert">
+                    Failed to add action to database. Please try again.
+                </div>
+            {% elif db_success == True %}
+                <div class="alert alert-success" role="alert">
+                    Successfully added action to database!
+                </div>
+            {% endif %}
+        </div>
+
     </div>
 
 </body>

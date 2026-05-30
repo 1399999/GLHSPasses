@@ -1,4 +1,5 @@
 import time as time
+import pandas as pd
 
 ## NEXT STEP USE FASTAPI TO CREATE AN API ENDPOINT TO RECEIVE THE DATA INSTEAD OF USING A UI CLASS TO SIMULATE THE DATA INPUT. 
 ## THIS WILL ALLOW FOR REAL-TIME DATA COLLECTION AND STORAGE IN THE DATABASE.
@@ -44,7 +45,7 @@ class DataBase():
         Base.metadata.create_all(self.engine)
         metadata_obj.create_all(self.engine)
 
-    def addAction(self, desiredID, desiredName, desiredLocation):
+    def addAction(self, desiredID, desiredLocation):
         with Session(self.engine) as session:
             db_user = session.scalar(
                 select(User)
@@ -52,30 +53,62 @@ class DataBase():
                 .options(joinedload(User.actions))
             )
 
-            if not db_user:
-                db_user = User(
-                    studentID = desiredID,
-                    name = desiredName
-                )
-
-                session.add(db_user)
+            if not db_user: return False
 
             db_user.actions.append(Action(location = desiredLocation))
 
             session.commit()
             session.refresh(db_user)
 
-    def searchID(self, searchID):
-        stmt = select(User).where(User.studentID == searchID).options(joinedload(User.actions))
+            return True
+
+    def addUser(self, desiredID, desiredName):
+        with Session(self.engine) as session:
+            db_user = session.scalar(
+                select(User)
+                .where(User.studentID == desiredID)
+                .options(joinedload(User.actions))
+            )
+
+            if db_user: return False
+
+            try:
+                new_user = User(studentID=desiredID, name=desiredName)
+                session.add(new_user)
+                session.commit()
+                session.refresh(new_user)
+            except:
+                return False
+
+            return True
+        
+    def replaceUsers(self, given_df):
+        try:
+            df = pd.read_csv(given_df)
+
+            df = df.reset_index(drop=True)
+
+            df.to_sql(
+                "user", 
+                self.engine, 
+                if_exists="replace", 
+                index=False,
+                index_label="false"
+            )
+            return True
+            
+        except:
+            return False
+
+    def searchName(self, searchName):
+        stmt = select(User).where(User.name == searchName).options(joinedload(User.actions))
 
         with Session(self.engine) as session:
             db_user = session.scalar(stmt)
 
             if db_user:
-                name = db_user.name
-
                 actions = [[action.location, action.time] for action in db_user.actions]
-                return [searchID, name, actions]
+                return [db_user.studentID, db_user.name, actions]
         
         return []
     
