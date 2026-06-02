@@ -7,7 +7,7 @@ t0 = None
 t1 = None
 combust_nun = None
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='Templates')
 db = Database.DataBase()
 
 @app.route("/", methods=["GET", "POST"])
