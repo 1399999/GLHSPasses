@@ -7,18 +7,29 @@
     <title>Flask Input Form</title>
 </head>
 <body>
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="/" role="tab" aria-controls="nav-home" aria-selected="true">Sample Functionality</a>
-            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="/data" role="tab" aria-controls="nav-profile" aria-selected="false">Display Data</a>
-            <a class="nav-item nav-link" id="nav-user-tab" data-toggle="tab" href="/user" role="tab" aria-controls="nav-user" aria-selected="false">User Management</a>
+    <nav class="navbar navbar-expand navbar-light bg-light border-bottom px-3">
+        <div class="nav nav-tabs border-0 me-auto" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" href="/">Sample Functionality</a>
+            <a class="nav-item nav-link" href="/data">Display Data</a>
+            <a class="nav-item nav-link" href="/user">User Management</a>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-muted small">
+                Signed in as <strong>{{ session.username }}</strong>
+            </span>
+            <a href="{{ url_for('register') }}" class="btn btn-sm btn-outline-secondary">New Account</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger">Log Out</a>
         </div>
     </nav>
-    </div>
 
     <div class="mx-auto">
-
         <br/>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} w-25 mx-auto py-2" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
 
         <form method="POST">
             <div class="mb-3 w-25 mx-auto">
@@ -27,10 +38,9 @@
             </div>
 
             <br/>
-            
+
             <div class="mb-3 w-25 mx-auto">
                 <label for="options" class="form-label">Choose a place to go:</label>
-
                 <select name="user_input_2" id="options" class="form-select" required>
                     <option value="restroom">Restroom</option>
                     <option value="library">Library</option>
@@ -42,8 +52,8 @@
 
             <br/>
 
-            <div display="display: flex; justify-content: center; align-items: center;" class="mb-3 w-25 mx-auto center">
-                <button type="submit", value="submit", name="submit_btn", class="btn btn-outline-success">Submit</button>
+            <div class="mb-3 w-25 mx-auto center">
+                <button type="submit" value="submit" name="submit_btn" class="btn btn-outline-success">Submit</button>
             </div>
         </form>
 
@@ -58,17 +68,10 @@
                 </div>
             {% endif %}
         </div>
-
     </div>
-
 </body>
 </html>
 
 <style>
-    .center {
-        display: flex; 
-        flex-direction: row;
-        align-items: center; 
-        justify-content: center;
-    }
+    .center { display: flex; flex-direction: row; align-items: center; justify-content: center; }
 </style>
